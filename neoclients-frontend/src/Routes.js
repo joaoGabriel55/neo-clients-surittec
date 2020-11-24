@@ -13,124 +13,81 @@ import Main from './layouts/template/Main';
 import SimpleLayout from './layouts/template/SimpleLayout'
 import SignIn from './auth/views/SignIn'
 
-import { getUserByUsername } from './services/UserService'
-
-import {
-    Dashboard,
-    ServiceOrder,
-    ProductionMap,
-    Customers,
-    Dressmakers,
-    Finances
-} from './views'
+import { Clientes } from './views'
 
 const SignInRouter = () => {
-    return (
-        <>
-            <Redirect
-                exact
-                from="/"
-                to="/sign-in"
-            />
-            <RouteWithLayout
-                component={SignIn}
-                exact
-                layout={SimpleLayout}
-                path="/sign-in"
-            />
-        </>
-    )
-}
-
-const ServiceOrderComponent = (pathParam) => {
-    return (
-        <RouteWithLayout
-            component={ServiceOrder}
-            exact
-            layout={Main}
-            path={pathParam ? `/ordem-de-servico/:${pathParam}` : '/ordem-de-servico'}
-        />
-    )
+  return (
+    <>
+      <Redirect
+        exact
+        from="/"
+        to="/sign-in"
+      />
+      <RouteWithLayout
+        component={SignIn}
+        exact
+        layout={SimpleLayout}
+        path="/sign-in"
+      />
+    </>
+  )
 }
 
 const Routes = () => {
-    const [userLogged, setUserLogged] = React.useContext(AuthContext);
-    const history = useHistory()
+  const { loginContext } = React.useContext(AuthContext);
+  const history = useHistory()
 
-    async function userTokenValidation() {
+  async function userTokenValidation() {
 
-        const token = localStorage.getItem('accessToken')
-        if (token) {
-            try {
-                const userToken = tokenDecoder(token)
-                const user = await getUserByUsername(userToken.username)
-
-                if (!userLogged)
-                    setUserLogged({ username: user.username })
-
-                return true
-            } catch (error) {
-                return false
-            }
-        } else if (!localStorage.getItem('accessToken') && !localStorage.getItem('refreshToken')) {
-            history.replace('/sign-in')
+    const token = localStorage.getItem('accessToken')
+    if (token) {
+      try {
+        const userToken = tokenDecoder(token)
+        console.log(userToken)
+        const { username, authorities } = userToken.sub
+        const userData = {
+          username,
+          profile: authorities[0].authority
         }
+        loginContext(userData)
+
+        return true
+      } catch (error) {
+        return false
+      }
+    } else if (!localStorage.getItem('accessToken')) {
+      history.replace('/sign-in')
     }
+  }
 
-    if (!userTokenValidation())
-        return (
-            <Switch>
-                {SignInRouter()}
-            </Switch>
-        )
-
+  if (!userTokenValidation())
     return (
-        <Switch>
-            <Redirect
-                exact
-                from="/"
-                to="/sign-in"
-            />
-            <RouteWithLayout
-                component={SignIn}
-                exact
-                layout={SimpleLayout}
-                path="/sign-in"
-            />
-            <RouteWithLayout
-                component={Dashboard}
-                exact
-                layout={Main}
-                path="/home"
-            />
-            {ServiceOrderComponent()}
-            {ServiceOrderComponent('id')}
-            <RouteWithLayout
-                component={ProductionMap}
-                exact
-                layout={Main}
-                path="/mapa-de-producao"
-            />
-            <RouteWithLayout
-                component={Customers}
-                exact
-                layout={Main}
-                path="/clientes"
-            />
-            <RouteWithLayout
-                component={Dressmakers}
-                exact
-                layout={Main}
-                path="/costureiras"
-            />
-            <RouteWithLayout
-                component={Finances}
-                exact
-                layout={Main}
-                path="/financas"
-            />
-        </Switch>
+      <Switch>
+        {SignInRouter()}
+      </Switch>
     )
+
+  return (
+    <Switch>
+      <Redirect
+        exact
+        from="/"
+        to="/sign-in"
+      />
+      <RouteWithLayout
+        component={SignIn}
+        exact
+        layout={SimpleLayout}
+        path="/sign-in"
+      />
+      <RouteWithLayout
+        component={Clientes}
+        exact
+        layout={Main}
+        path="/clientes"
+      />
+    </Switch>
+  )
 }
 
 export default Routes;

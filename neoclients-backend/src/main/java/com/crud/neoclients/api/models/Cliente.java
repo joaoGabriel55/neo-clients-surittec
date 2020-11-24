@@ -35,13 +35,11 @@ public class Cliente {
     @JoinColumn(name = "endereco_id", referencedColumnName = "id")
     @NotNull(message = "Endereço é requerido")
     private Endereco endereco;
-
-    @Column(nullable = false)
+    
     @Size(min = 1, message = "Ao menos um telefone é requerido")
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "cliente")
     private Set<Telefone> telefones;
 
-    @Column(nullable = false)
     @Size(min = 1, message = "Ao menos um email é requerido")
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "cliente")
     private Set<Email> emails;

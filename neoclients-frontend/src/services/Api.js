@@ -8,7 +8,7 @@ export const API = axios.create({
 
 API.interceptors.request.use(
     config => {
-        config.headers.common['Authorization'] = `Bearer ${localStorage.getItem('accessToken')}`
+        config.headers.common['Authorization'] = `${localStorage.getItem('accessToken')}`
         return config;
     },
     error => Promise.reject(error)
