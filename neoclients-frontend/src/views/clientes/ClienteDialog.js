@@ -73,6 +73,12 @@ export default function ClienteDialog(props) {
 
   function addEmail() {
     if (email && email.emailAddress.length > 0 && EmailValidator.validate(email.emailAddress)) {
+      for (const elem of emails) {
+        if (elem.emailAddress === email.emailAddress) {
+          snackbarService.showSnackbar(`Email ${email.emailAddress} já adicionado`, 'error')
+          return
+        }
+      }
       setEmails([...emails, email])
       setCliente({
         ...cliente,
@@ -93,6 +99,13 @@ export default function ClienteDialog(props) {
       } else if (telefone.tipoTelefone !== 'CELULAR' && onlyNumbers.length !== 10) {
         snackbarService.showSnackbar('Verifique o quantidade de dígitos', 'error')
         return
+      }
+
+      for (const tel of telefones) {
+        if (tel.numero === telefone.numero) {
+          snackbarService.showSnackbar(`Número ${telefone.numero} já adicionado`, 'error')
+          return
+        }
       }
 
       setTelefones([...telefones, telefone])
