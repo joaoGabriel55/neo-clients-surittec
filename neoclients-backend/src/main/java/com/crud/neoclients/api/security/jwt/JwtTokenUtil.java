@@ -11,6 +11,7 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 @Component
 public class JwtTokenUtil implements Serializable {
@@ -29,17 +30,24 @@ public class JwtTokenUtil implements Serializable {
 
     public String getUsernameFromToken(String token) {
         String username;
-
         try {
-
             final Claims claims = getClaimsFromToken(token);
-            username = claims.getSubject();
-
+            Map<String, Object> userMap = convertToStringToHashMap(claims.getSubject());
+            username = userMap.get("username").toString();
         } catch (Exception e) {
             username = null;
         }
-
         return username;
+    }
+
+    private HashMap<String, Object> convertToStringToHashMap(String text) {
+        HashMap<String, Object> data = new HashMap<>();
+        Pattern p = Pattern.compile("[\\{\\}\\=\\, ]++");
+        String[] split = p.split(text);
+        for (int i = 1; i + 2 <= split.length; i += 2) {
+            data.put(split[i], split[i + 1]);
+        }
+        return data;
     }
 
     public Date getExpirationDateFromToken(String token) {
@@ -77,7 +85,7 @@ public class JwtTokenUtil implements Serializable {
     public String generateToken(UserDetails userDetails) {
         Map<String, Object> claims = new HashMap<>();
 
-        claims.put(CLAIM_KEY_USERNAME, userDetails.getUsername());
+        claims.put(CLAIM_KEY_USERNAME, userDetails);
 
         final Date createdDate = new Date();
         claims.put(CLAIM_KEY_CREATED, createdDate);

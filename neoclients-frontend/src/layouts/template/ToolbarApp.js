@@ -21,13 +21,13 @@ export default function ToolbarApp(props) {
     const classes = useStyles();
     const history = useHistory();
 
-    const [userLogged, setUserLogged] = React.useContext(AuthContext);
+    const { userLogged, logoutContext } = React.useContext(AuthContext);
 
     function logout() {
         localStorage.removeItem('accessToken')
         localStorage.removeItem('refreshToken')
-        if(userLogged)
-            setUserLogged(null)
+        if (userLogged)
+            logoutContext()
         history.replace('/sign-in')
     }
 
@@ -45,15 +45,15 @@ export default function ToolbarApp(props) {
                     <MenuIcon />
                 </IconButton>
                 <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
-                    <span style={{ color: theme.palette.secondary.main }}>Nova de Novo</span>
+                    <span style={{ color: theme.palette.secondary.main }}>Neo Clients</span>
+                </Typography>
+                <Typography component="h1" variant="h6" color="inherit" noWrap>
+                    <span style={{ color: theme.palette.secondary.main }}>Bem vindo, {userLogged.username}</span>
                 </Typography>
                 <IconButton color="inherit" onClick={() => logout()}>
                     <Tooltip title="Sair" aria-label="exit">
                         <ExitToAppIcon color="secondary" />
                     </Tooltip>
-                    {/* <Badge badgeContent={4} color="secondary">
-                       
-                    </Badge> */}
                 </IconButton>
             </Toolbar>
         </AppBar>

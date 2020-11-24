@@ -5,8 +5,6 @@ import CssBaseline from '@material-ui/core/CssBaseline'
 import { SnackbarContainer } from 'uno-material-ui';
 import theme from './theme'
 
-import { AuthContextProvider } from "./auth/context/AuthContextProvider";
-
 import { Router } from 'react-router-dom';
 import { createBrowserHistory } from 'history';
 import Routes from './Routes';
@@ -17,12 +15,10 @@ function App() {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <AuthContextProvider>
-        <SnackbarContainer />
-        <Router history={browserHistory}>
-          <Routes />
-        </Router>
-      </AuthContextProvider>
+      <SnackbarContainer />
+      <Router history={browserHistory}>
+        <Routes />
+      </Router>
     </ThemeProvider>
 
   );

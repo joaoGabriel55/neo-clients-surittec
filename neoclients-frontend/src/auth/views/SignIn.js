@@ -20,144 +20,146 @@ import { userLogin } from '../../services/auth/AuthService'
 import { AuthContext } from '../context/AuthContextProvider';
 
 function Copyright() {
-    return (
-        <Typography variant="body2" color="textSecondary" align="center">
-            {'Copyright © '}
-            <Link color="inherit" href="">
-                Nova de Novo - by Gabriel Quaresma
+  return (
+    <Typography variant="body2" color="textSecondary" align="center">
+      {'Copyright © '}
+      <Link color="inherit" href="">
+        Neo Clients - by Gabriel Quaresma
             </Link>{' '}
-            {new Date().getFullYear()}
-            {'.'}
-        </Typography>
-    );
+      {new Date().getFullYear()}
+      {'.'}
+    </Typography>
+  );
 }
 
 export default function SignIn() {
-    const classes = useStyles();
-    const history = useHistory();
+  const classes = useStyles();
+  const history = useHistory();
 
-    const [alert, setAlert] = React.useState(false)
-    const errorMessage = 'Credenciais inválidas. Verifique-as'
-    const [userCredentials, setUserCredentials] = React.useState({ username: null, password: null });
-    const [userLogged, setUserLogged] = React.useContext(AuthContext);
+  const [alert, setAlert] = React.useState(false)
+  const errorMessage = 'Credenciais inválidas. Verifique-as'
+  const [userCredentials, setUserCredentials] = React.useState({ username: null, password: null });
+  const { loginContext } = React.useContext(AuthContext);
 
-    const updateField = e => {
-        setUserCredentials({
-            ...userCredentials,
-            [e.target.name]: e.target.value
+  const updateField = e => {
+    setUserCredentials({
+      ...userCredentials,
+      [e.target.name]: e.target.value
+    })
+  }
+
+  function signIn(e) {
+    e.preventDefault()
+    if (!userCredentials.username || !userCredentials.password)
+      snackbarService.showSnackbar('Informe seu usuário e senha', 'info')
+    else {
+      userLogin(userCredentials)
+        .then(res => {
+          const { token, user } = res.data
+          localStorage.setItem('accessToken', token)
+          const userData = {
+            username: user.username,
+            profile: user.profile
+          }
+          loginContext(userData)
+          history.replace('/clientes')
+          setUserCredentials({})
+        })
+        .catch(() => {
+          setAlert(true)
         })
     }
+  }
 
-    function signIn(e) {
-        e.preventDefault()
-        if (!userCredentials.username || !userCredentials.password)
-            snackbarService.showSnackbar('Informe seu usuário e senha', 'info')
-        else {
-            userLogin(userCredentials)
-                .then(res => {
-                    const { accessToken, refreshToken } = res.data
-                    localStorage.setItem('accessToken', accessToken)
-                    localStorage.setItem('refreshToken', refreshToken)
-                    if (!userLogged)
-                        setUserLogged({ username: userCredentials.username })
-                    history.replace('/home')
-                    setUserCredentials({})
-                })
-                .catch(() => {
-                    setAlert(true)
-                })
-        }
-    }
-
-    return (
-        <Grid container component="main" className={classes.root}>
-            <CssBaseline />
-            <Grid item xs={false} sm={4} md={7} className={classes.image} />
-            <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
-                <div className={classes.paper}>
-                    <Avatar className={classes.avatar}>
-                        <LockOutlinedIcon />
-                    </Avatar>
-                    <Typography component="h1" variant="h5">
-                        Sign in
-                    </Typography>
-                    <form className={classes.form} onSubmit={signIn}>
-                        {alert ?
-                            <Alert severity="error" onClose={() => { setAlert(false) }}>{errorMessage}</Alert> :
-                            null}
-                        <TextField
-                            variant="outlined"
-                            color="secondary"
-                            margin="normal"
-                            required
-                            fullWidth
-                            id="username"
-                            label="Usuário"
-                            name="username"
-                            value={userCredentials.username}
-                            onChange={updateField}
-                            autoFocus
-                        />
-                        <TextField
-                            variant="outlined"
-                            color="secondary"
-                            margin="normal"
-                            required
-                            fullWidth
-                            name="password"
-                            value={userCredentials.password}
-                            label="Password"
-                            type="password"
-                            id="password"
-                            onChange={updateField}
-                        />
-                        <Button
-                            type="submit"
-                            fullWidth
-                            variant="contained"
-                            color="primary"
-                            className={classes.submit}
-                        >
-                            Entrar
+  return (
+    <Grid container component="main" className={classes.root}>
+      <CssBaseline />
+      <Grid item xs={false} sm={4} md={7} className={classes.image} />
+      <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
+        <div className={classes.paper}>
+          <Avatar className={classes.avatar}>
+            <LockOutlinedIcon />
+          </Avatar>
+          <Typography component="h1" variant="h5">
+            Neo Clients - Sign in
+          </Typography>
+          <form className={classes.form} onSubmit={signIn}>
+            {alert ?
+              <Alert severity="error" onClose={() => { setAlert(false) }}>{errorMessage}</Alert> :
+              null}
+            <TextField
+              variant="outlined"
+              color="secondary"
+              margin="normal"
+              required
+              fullWidth
+              id="username"
+              label="Usuário"
+              name="username"
+              value={userCredentials.username}
+              onChange={updateField}
+              autoFocus
+            />
+            <TextField
+              variant="outlined"
+              color="secondary"
+              margin="normal"
+              required
+              fullWidth
+              name="password"
+              value={userCredentials.password}
+              label="Password"
+              type="password"
+              id="password"
+              onChange={updateField}
+            />
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              color="primary"
+              className={classes.submit}
+            >
+              Entrar
                         </Button>
-                        <Box mt={5}>
-                            <Copyright />
-                        </Box>
-                    </form>
-                </div>
-            </Grid>
-        </Grid>
-    );
+            <Box mt={5}>
+              <Copyright />
+            </Box>
+          </form>
+        </div>
+      </Grid>
+    </Grid>
+  );
 }
 
 const useStyles = makeStyles((theme) => ({
-    root: {
-        height: '100vh',
-    },
-    image: {
-        backgroundImage: 'url(https://wallpaperaccess.com/full/2489626.jpg)',
-        backgroundRepeat: 'no-repeat',
-        backgroundColor:
-            theme.palette.type === 'light' ? theme.palette.grey[50] : theme.palette.grey[900],
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-    },
-    paper: {
-        margin: theme.spacing(8, 4),
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-    },
-    avatar: {
-        margin: theme.spacing(1),
-        backgroundColor: theme.palette.secondary.main,
-    },
-    form: {
-        width: '100%', // Fix IE 11 issue.
-        marginTop: theme.spacing(1),
-    },
-    submit: {
-        margin: theme.spacing(3, 0, 2),
-        color: 'white'
-    },
+  root: {
+    height: '100vh',
+  },
+  image: {
+    backgroundImage: 'url(https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1500&q=80)',
+    backgroundRepeat: 'no-repeat',
+    backgroundColor:
+      theme.palette.type === 'light' ? theme.palette.grey[50] : theme.palette.grey[900],
+    backgroundSize: 'cover',
+    backgroundPosition: 'center',
+  },
+  paper: {
+    margin: theme.spacing(8, 4),
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+  },
+  avatar: {
+    margin: theme.spacing(1),
+    backgroundColor: theme.palette.secondary.main,
+  },
+  form: {
+    width: '100%', // Fix IE 11 issue.
+    marginTop: theme.spacing(1),
+  },
+  submit: {
+    margin: theme.spacing(3, 0, 2),
+    color: 'white'
+  },
 }));
