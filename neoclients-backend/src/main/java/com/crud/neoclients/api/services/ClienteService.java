@@ -112,10 +112,10 @@ public class ClienteService implements IClienteService {
         for (Telefone telefone : telefones) {
             telefone.setNumero(telefone.getNumero().replaceAll("\\D", ""));
             if (telefone.getTipoTelefone() == TipoTelefone.CELULAR) {
-                if (telefone.getNumero().length() > 11)
+                if (telefone.getNumero().length() != 11)
                     throw new Exception("Telefone tipo CELULAR: " + telefone.getNumero() + " é inválido");
             } else {
-                if (telefone.getNumero().length() > 10) {
+                if (telefone.getNumero().length() != 10) {
                     throw new Exception("Telefone tipo " +
                             telefone.getTipoTelefone().name() + ": " +
                             telefone.getNumero() + " é inválido"
