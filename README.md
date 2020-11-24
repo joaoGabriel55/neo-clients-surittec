@@ -8,7 +8,7 @@ A simple CRUD application
 
 Para acessar a aplicação frontend basta acessar o link:
 
-- [Neo Clients web app](https://neo-clients-surittec-git-develop.joaogabriel55.vercel.app)
+- [Neo Clients web app](https://neo-clients-surittec-git-master.joaogabriel55.vercel.app)
 
 Para acessar a aplicação backend (API) basta acessar o link:
 
