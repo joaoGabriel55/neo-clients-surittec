@@ -1,13 +1,18 @@
 # Neo clients surittec
 A simple CRUD application
 
+<img src="screenshots/screenshot4.png" height="400"/>
+<img src="screenshots/screenshot1.png" height="400"/>
+<img src="screenshots/screenshot2.png" height="400"/>
+<img src="screenshots/screenshot3.png" height="400"/>
+
 Para acessar a aplicação frontend basta acessar o link:
 
-- [Neo Clients web app](https://neo-clients-surittec-a6itk1772.vercel.app)
+- [Neo Clients web app](https://neo-clients-surittec-git-develop.joaogabriel55.vercel.app)
 
 Para acessar a aplicação backend (API) basta acessar o link:
 
-- [Neo Clients API](https://neo-clients-api.herokuapp.com/neo-clients/)
+- [Neo Clients API](https://neo-clients-api.herokuapp.com/neo-clients)
 
 ## Deploy local
 
